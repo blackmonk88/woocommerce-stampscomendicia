@@ -187,6 +187,21 @@ class WC_StampscomEndicia_API_Shipnotify extends WC_StampscomEndicia_API_Request
 			$is_customer_note = 1;
 		}
 		
+		// PBD modify to also update YITH Order Tracking start here
+		switch(strtolower( $carrier )) {
+			case 'ups':
+				update_post_meta( $order->id, 'ywot_carrier_id', 'UPS_US' );
+				break;
+			case 'usps':
+				update_post_meta( $order->id, 'ywot_carrier_id', 'USPS' );
+				break;
+		}
+		update_post_meta( $order->id, 'ywot_tracking_code', $tracking_number );
+		update_post_meta( $order->id, 'ywot_pick_up_date', date('Y-m-d', $timestamp ));
+		update_post_meta( $order->id, 'ywot_tracking_postcode', '' );
+		update_post_meta( $order->id, 'ywot_picked_up', '1' );
+		// PBD modify to also update YITH Order Tracking end here
+		
 		$order->add_order_note( $order_note, $is_customer_note );
 
 		// Update order status
